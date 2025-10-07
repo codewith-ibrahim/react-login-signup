@@ -1,22 +1,49 @@
-import React, { useState } from "react";
-import "../css/Form.css";
+import React from "react";
+import "../Css/Form.css";
 import { useDispatch, useSelector } from "react-redux";
-import { updateField, resetForm } from "../../formSlice";
+import { updateField, resetForm } from "../../Redux/formSlice";
 
 const Signup = () => {
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
 
   const handleChange = (e) => {
-    const {name, value, files} = e.target;
-    dispatch(updateField({name, value: files ? files[0] : value }));
-  }
+    const { name, value, files } = e.target;
+    const fieldValue = files ? files[0] : value;
+    dispatch(updateField({ name, value: fieldValue }));
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
 
-    dispatch(resetForm());
+    const data = new FormData();
+    data.append("cmpID", formData.cmpID);
+    data.append("cmpName", formData.cmpName);
+    data.append("cmpAddress", formData.cmpAddress);
+    data.append("cmpEmail", formData.cmpEmail);
+    data.append("cmpContact", formData.cmpContact);
+    data.append("cmpImage", formData.cmpImage);
+
+    try {
+      const res = await fetch("https://servermaltex.whdevs.com/company/addcompany", {
+        method: "POST",
+        body: data,
+      });
+
+      const result = await res.json();
+      console.log("Server Response:", result);
+
+      if (res.ok) {
+        alert("Form submitted successfully!");
+        dispatch(resetForm());
+        e.target.reset();
+      } else {
+        alert(result.message || "Something went wrong!");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("Failed to connect to server");
+    }
   };
 
   return (
@@ -24,56 +51,66 @@ const Signup = () => {
       <form className="form" onSubmit={handleSubmit}>
         <h3 className="heading">Signup</h3>
 
-        <label htmlFor="name">Full Name</label>
+        <label htmlFor="cmpID">Company ID</label>
         <input
-          type="text"
-          id="name"
-          value={formData.name}
+          type="number"
+          id="cmpID"
+          name="cmpID"
+          value={formData.cmpID}
           onChange={handleChange}
-          name="name"
         />
 
-        <label htmlFor="company">Company Name</label>
+        <label htmlFor="cmpName">Company Name</label>
         <input
           type="text"
-          id="company"
-          value={formData.company}
+          id="cmpName"
+          name="cmpName"
+          value={formData.cmpName}
           onChange={handleChange}
-          name="company"
         />
 
-        <label htmlFor="email">Email</label>
+        <label htmlFor="cmpAddress">Address</label>
+        <input
+          type="text"
+          id="cmpAddress"
+          name="cmpAddress"
+          value={formData.cmpAddress}
+          onChange={handleChange}
+        />
+
+        <label htmlFor="cmpEmail">Email</label>
         <input
           type="email"
-          id="email"
-          value={formData.email}
+          id="cmpEmail"
+          name="cmpEmail"
+          value={formData.cmpEmail}
           onChange={handleChange}
-          name="email"
         />
 
-        <label htmlFor="contact">Contact Number</label>
+        <label htmlFor="cmpContact">Contact Number</label>
         <input
           type="tel"
-          id="contact"
-          value={formData.contact}
+          id="cmpContact"
+          name="cmpContact"
+          value={formData.cmpContact}
           onChange={handleChange}
-          name="contact"
         />
 
-        <label htmlFor="address">Addres</label>
+        <label htmlFor="cmpImage">Upload Image</label>
         <input
-          type="text"
-          id="address"
-          value={formData.address}
+          type="file"
+          id="cmpImage"
+          name="cmpImage"
           onChange={handleChange}
-          name="address"
         />
 
-        <label htmlFor="image">Upload Image</label>
-        <input type="file" id="image" name="image" onChange={handleChange} />
         <div className="btnWraper">
           <button type="submit">Submit</button>
         </div>
+
+        <p className="form-link">
+          Already have an account? <a href="/login">Login</a>
+        </p>
       </form>
     </div>
   );

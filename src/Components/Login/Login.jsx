@@ -1,45 +1,39 @@
-import React, { useState } from "react";
-import "../css/Form.css";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../Redux/authSlice";
+import "../Css/Form.css"; // 👈 same CSS file
 
 const Login = () => {
+  const dispatch = useDispatch();
 
-  const initialState = {
-    cmpID: "",
-    cmpName: "",
-    cmpAddress: "",
-    cmpEmail: "",
-    cmpContact: "",
-    cmpImage: null
-  }
-
-  const [formData, setFormData] = useState(initialState);
-
-  const handleChange = (e) => {
-    const {name, value, files} = e.target;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: files ? files[0]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
 
-    const data = new FormData();
-    data.append("cmpID", formData.companyID);
-    data.append("cmpName", formData.companyName);
-    data.append("cmpAddress", formData.companyAddress);
-    data.append("cmpEmail", formData.companyEmail);
-    data.append("cmpContact", formData.companyContact);
-    data.append("cmpImage", formData.companyImage);
+    const form = new FormData(e.target);
+    const cmpID = form.get("cmpID");
+    const cmpEmail = form.get("cmpEmail");
 
-    e.target.reset();
+    try {
+      const res = await fetch("https://servermaltex.whdevs.com/company/addcompany", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cmpID, cmpEmail }),
+      });
 
-    setFormData(initialState);
+      const data = await res.json();
 
-  }
+      if (res.ok) {
+        dispatch(loginSuccess(data.data));
+        alert("Logged in successfully");
+        e.target.reset();
+      } else {
+        alert((data.message || "Invalid credentials"));
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Something went wrong, please try again later.");
+    }
+  };
 
   return (
     <div className="wrapper">
@@ -47,25 +41,33 @@ const Login = () => {
         <h3 className="heading">Login</h3>
 
         <label htmlFor="cmpID">Company ID</label>
-        <input type="number" id="cmpID" value={formData.cmpID} onChange={handleChange} name="cmpID" />
-
-        <label htmlFor="cmpName">Company Name</label>
-        <input type="text" id="cmpName" value={formData.cmpName} onChange={handleChange} name="cmpName" />
-
-        <label htmlFor="cmpAddress">Addres</label>
-        <input type="text" id="cmpAddress" value={formData.cmpAddress} onChange={handleChange} name="cmpAddress" />
+        <input
+          type="number"
+          id="cmpID"
+          name="cmpID"
+          placeholder="Enter your company ID"
+          required
+        />
 
         <label htmlFor="cmpEmail">Email</label>
-        <input type="email" id="cmpEmail" value={formData.cmpEmail} onChange={handleChange} name="cmpEmail" />
+        <input
+          type="email"
+          id="cmpEmail"
+          name="cmpEmail"
+          placeholder="Enter your email"
+          required
+        />
 
-        <label htmlFor="cmpContact">Contact Number</label>
-        <input type="tel" id="cmpContact" value={formData.cmpContact} onChange={handleChange} name="cmpContact" />
-
-        <label htmlFor="cmpImage">Upload Image</label>
-        <input type="file" id="cmpImage" name="cmpImage" onChange={handleChange} />
         <div className="btnWraper">
-          <button type="submit">Submit</button>
+          <button type="submit">Login</button>
         </div>
+
+        <p className="form-link">
+          Don’t have an account?
+          <a href="/signup" className="form-link-anchor">
+            Signup
+          </a>
+        </p>
       </form>
     </div>
   );
