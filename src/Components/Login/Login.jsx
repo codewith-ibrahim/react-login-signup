@@ -4,12 +4,12 @@ import "../css/Form.css";
 const Login = () => {
 
   const initialState = {
-    name: "",
-    company: "",
-    email: "",
-    contact: "",
-    address: "",
-    image: null
+    cmpID: "",
+    cmpName: "",
+    cmpAddress: "",
+    cmpEmail: "",
+    cmpContact: "",
+    cmpImage: null
   }
 
   const [formData, setFormData] = useState(initialState);
@@ -28,12 +28,12 @@ const Login = () => {
     console.log("Form Data:", formData);
 
     const data = new FormData();
-    data.append("name", formData.name);
-    data.append("company", formData.company);
-    data.append("email", formData.email);
-    data.append("contact", formData.contact);
-    data.append("address", formData.address);
-    data.append("image", formData.image);
+    data.append("cmpID", formData.companyID);
+    data.append("cmpName", formData.companyName);
+    data.append("cmpAddress", formData.companyAddress);
+    data.append("cmpEmail", formData.companyEmail);
+    data.append("cmpContact", formData.companyContact);
+    data.append("cmpImage", formData.companyImage);
 
     e.target.reset();
 
@@ -46,23 +46,23 @@ const Login = () => {
       <form className="form" onSubmit={handleSubmit}>
         <h3 className="heading">Login</h3>
 
-        <label htmlFor="name">Name</label>
-        <input type="text" id="name" value={formData.name} onChange={handleChange} name="name" />
+        <label htmlFor="cmpID">Company ID</label>
+        <input type="number" id="cmpID" value={formData.cmpID} onChange={handleChange} name="cmpID" />
 
-        <label htmlFor="company">Company Name</label>
-        <input type="text" id="company" value={formData.company} onChange={handleChange} name="company" />
+        <label htmlFor="cmpName">Company Name</label>
+        <input type="text" id="cmpName" value={formData.cmpName} onChange={handleChange} name="cmpName" />
 
-        <label htmlFor="email">Email</label>
-        <input type="email" id="email" value={formData.email} onChange={handleChange} name="email" />
+        <label htmlFor="cmpAddress">Addres</label>
+        <input type="text" id="cmpAddress" value={formData.cmpAddress} onChange={handleChange} name="cmpAddress" />
 
-        <label htmlFor="contact">Contact Number</label>
-        <input type="tel" id="contact" value={formData.contact} onChange={handleChange} name="contact" />
+        <label htmlFor="cmpEmail">Email</label>
+        <input type="email" id="cmpEmail" value={formData.cmpEmail} onChange={handleChange} name="cmpEmail" />
 
-        <label htmlFor="address">Addres</label>
-        <input type="text" id="address" value={formData.address} onChange={handleChange} name="address" />
+        <label htmlFor="cmpContact">Contact Number</label>
+        <input type="tel" id="cmpContact" value={formData.cmpContact} onChange={handleChange} name="cmpContact" />
 
-        <label htmlFor="image">Upload Image</label>
-        <input type="file" id="image" name="image" onChange={handleChange} />
+        <label htmlFor="cmpImage">Upload Image</label>
+        <input type="file" id="cmpImage" name="cmpImage" onChange={handleChange} />
         <div className="btnWraper">
           <button type="submit">Submit</button>
         </div>
