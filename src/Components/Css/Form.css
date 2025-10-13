@@ -47,16 +47,6 @@
     padding: 20px 0;
 }
 
-button {
-    padding: 8px 40px;
-    background: black;
-    border: 1px solid white;
-    color: white;
-    cursor: pointer;
-    font-size: 14px;
-    border-radius: 10px;
-}
-
 .form-link {
   display: block;
   margin-top: 1rem;

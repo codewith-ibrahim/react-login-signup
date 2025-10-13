@@ -2,6 +2,7 @@ import React from "react";
 import "../Css/Form.css";
 import { useDispatch, useSelector } from "react-redux";
 import { updateField, resetForm } from "../../Redux/formSlice";
+import Button from "../ui/Button";
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -105,7 +106,7 @@ const Signup = () => {
         />
 
         <div className="btnWraper">
-          <button type="submit">Submit</button>
+          <Button type="submit" title="Submit"/>
         </div>
 
         <p className="form-link">

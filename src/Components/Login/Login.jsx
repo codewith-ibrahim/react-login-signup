@@ -1,7 +1,8 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../Redux/authSlice";
-import "../Css/Form.css"; // 👈 same CSS file
+import Button from "../ui/Button";
+import "../Css/Form.css";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -59,7 +60,7 @@ const Login = () => {
         />
 
         <div className="btnWraper">
-          <button type="submit">Login</button>
+          <Button type="submit" title="Login" icon="FaSignInAlt"/>
         </div>
 
         <p className="form-link">

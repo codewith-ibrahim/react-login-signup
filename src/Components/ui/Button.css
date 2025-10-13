@@ -1,0 +1,54 @@
+:root {
+    --delete: #e53935;
+    --success: #43a047;
+    --default: #000;
+}
+
+.custom-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--default);
+    color: #fff;
+    padding: 6px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s ease;
+    border: 1px solid transparent;
+  }
+  
+  .custom-btn:hover {
+    background-color: transparent;
+    color: var(--default);
+    border: 1px solid #000;
+  }
+  
+  .custom-btn.delete {
+    background-color: var(--delete);
+    border-color: var(--delete);
+  }
+  
+  .custom-btn.delete:hover {
+    background-color: transparent;
+    color: var(--delete);
+    border: 1px solid var(--delete);
+  }
+  
+  .custom-btn.success {
+    background-color: var(--success);
+    border-color: var(--success);
+  }
+  
+  .custom-btn.success:hover {
+    background-color: transparent;
+    color: var(--success);
+    border: 1px solid var(--success);
+  }
+  
+  
+  .icon {
+    font-size: 16px;
+  }
+  
