@@ -164,7 +164,7 @@ const Dashboard = () => {
                   <ListItemButton onClick={() => toggleSubMenu(head.headMenu)}>
                     <ListItemText
                       primary={head.headMenu}
-                      sx={{ fontWeight: "bold" }}
+                      sx={{ fontWeight: "bold" }} 
                     />
                     {openMenus[head.headMenu] ? <ExpandLess /> : <ExpandMore />}
                   </ListItemButton>

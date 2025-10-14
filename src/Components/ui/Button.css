@@ -47,6 +47,30 @@
     border: 1px solid var(--success);
   }
   
+  .custom-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  .icon.spin {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .custom-btn.loading {
+    background-color: #555;
+    border-color: #555;
+    cursor: wait;
+  }
   
   .icon {
     font-size: 16px;

@@ -23,7 +23,7 @@ export async function loginCompany(cmpID, cmpEmail) {
 
 export async function singupCompany(formData) {
     try {
-        const res = await fetch(`${BASE_URL}/addcompany`, {
+        const res = await fetch(`${BASE_URL}/company/addcompany`, {
             method: "POST",
             body: formData,
         });

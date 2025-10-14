@@ -1,38 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
 import "../css/Form.css";
 import { useDispatch, useSelector } from "react-redux";
 import { updateField, resetForm } from "../../Redux/formSlice";
-import {singupCompany} from "../../api/auth"
+import { singupCompany } from "../../api/auth";
 import Button from "../ui/Button";
 
 const Signup = () => {
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    const fieldValue = files ? files[0] : value;
-    dispatch(updateField({ name, value: fieldValue }));
+
+    if (files) {
+      const file = files[0];
+      setSelectedFile(file);
+      dispatch(updateField({ name, value: file.name }));
+    } else {
+      dispatch(updateField({ name, value }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = new FormData();
-    data.append("cmpID", formData.cmpID);
-    data.append("cmpName", formData.cmpName);
-    data.append("cmpAddress", formData.cmpAddress);
-    data.append("cmpEmail", formData.cmpEmail);
-    data.append("cmpContact", formData.cmpContact);
-    data.append("cmpImage", formData.cmpImage);
+    setIsLoading(true);
+
+    const formPayload = new FormData();
+    formPayload.append("cmpID", formData.cmpID);
+    formPayload.append("cmpName", formData.cmpName);
+    formPayload.append("cmpAddress", formData.cmpAddress);
+    formPayload.append("cmpEmail", formData.cmpEmail);
+    formPayload.append("cmpContact", formData.cmpContact);
+    if (selectedFile) {
+      formPayload.append("cmpImage", selectedFile);
+    }
 
     try {
-      const data = await singupCompany(data);
+      const res = await singupCompany(formPayload);
       alert("Form submitted successfully!");
       dispatch(resetForm());
       e.target.reset();
-    } catch(err){
+      setSelectedFile(null);
+    } catch (err) {
       alert(err.message || "Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
 
     // try {
@@ -116,7 +133,12 @@ const Signup = () => {
         />
 
         <div className="btnWraper">
-          <Button type="submit" title="Submit" icon="FaPaperPlane" variant="delete"/>
+          <Button
+            type="submit"
+            title={isLoading ? "Submitting..." : "Submit"}
+            icon={isLoading ? "FaSpinner" : "FaPaperPlane"} 
+            disabled={isLoading}
+          />
         </div>
 
         <p className="form-link">
