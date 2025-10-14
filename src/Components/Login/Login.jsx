@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../Redux/authSlice";
 import Button from "../ui/Button";
-import "../Css/Form.css";
+import "../css/Form.css";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,6 +14,8 @@ const Login = () => {
     const form = new FormData(e.target);
     const cmpID = form.get("cmpID");
     const cmpEmail = form.get("cmpEmail");
+
+    isSubmitting(true);
 
     try {
       const res = await fetch("https://servermaltex.whdevs.com/company/addcompany", {
@@ -33,6 +36,8 @@ const Login = () => {
     } catch (error) {
       console.error("Login error:", error);
       alert("Something went wrong, please try again later.");
+    } finally {
+      isSubmitting(false)
     }
   };
 
@@ -64,7 +69,7 @@ const Login = () => {
         </div>
 
         <p className="form-link">
-          Don’t have an account?
+          Don’t have an account?{" "}
           <a href="/signup" className="form-link-anchor">
             Signup
           </a>
