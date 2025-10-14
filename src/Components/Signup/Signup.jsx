@@ -2,6 +2,7 @@ import React from "react";
 import "../css/Form.css";
 import { useDispatch, useSelector } from "react-redux";
 import { updateField, resetForm } from "../../Redux/formSlice";
+import {singupCompany} from "../../api/auth"
 import Button from "../ui/Button";
 
 const Signup = () => {
@@ -26,25 +27,34 @@ const Signup = () => {
     data.append("cmpImage", formData.cmpImage);
 
     try {
-      const res = await fetch("https://servermaltex.whdevs.com/company/addcompany", {
-        method: "POST",
-        body: data,
-      });
-
-      const result = await res.json();
-      console.log("Server Response:", result);
-
-      if (res.ok) {
-        alert("Form submitted successfully!");
-        dispatch(resetForm());
-        e.target.reset();
-      } else {
-        alert(result.message || "Something went wrong!");
-      }
-    } catch (err) {
-      console.error("Error:", err);
-      alert("Failed to connect to server");
+      const data = await singupCompany(data);
+      alert("Form submitted successfully!");
+      dispatch(resetForm());
+      e.target.reset();
+    } catch(err){
+      alert(err.message || "Something went wrong");
     }
+
+    // try {
+    //   const res = await fetch("https://servermaltex.whdevs.com/company/addcompany", {
+    //     method: "POST",
+    //     body: data,
+    //   });
+
+    //   const result = await res.json();
+    //   console.log("Server Response:", result);
+
+    //   if (res.ok) {
+    //     alert("Form submitted successfully!");
+    //     dispatch(resetForm());
+    //     e.target.reset();
+    //   } else {
+    //     alert(result.message || "Something went wrong!");
+    //   }
+    // } catch (err) {
+    //   console.error("Error:", err);
+    //   alert("Failed to connect to server");
+    // }
   };
 
   return (

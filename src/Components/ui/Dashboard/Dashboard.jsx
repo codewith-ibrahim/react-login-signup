@@ -10,53 +10,68 @@ import {
   ListItemText,
   Box,
   CssBaseline,
-  Tooltip,
+  ListItemButton,
+  Collapse,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import { getDashboardData } from "../../../api/dashboard";
 
 const drawerWidth = 240;
 
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
+  const [menuData, setMenuData] = useState([]);
+  const [openMenus, setOpenMenus] = useState({});
 
-  const handleDrawerToggle = () => {
-    setOpen(!open);
+  const dashboardInfo = {
+    companyLogo:
+      "https://static.vecteezy.com/system/resources/thumbnails/008/214/517/small_2x/abstract-geometric-logo-or-infinity-line-logo-for-your-company-free-vector.jpg",
+    companyName: "Company Name",
+    userProfile: "https://mui.com/static/images/avatar/2.jpg",
+    userName: "Ibrahim",
   };
 
-  const data = {
-    siderList: ["Home", "About", "Contact"],
-  };
-  console.log("before api call", data);
+  const handleDrawerToggle = () => setOpen(!open);
 
-  async function getdata() {
-    try {
-      const res = await fetch("https://servermaltex.whdevs.com/menus/getMenusUserIDWise", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userID: 1,
-        }),
-      });
-  
-      if (!res.ok) throw new Error("Network error");
-  
-      const data = await res.json();
-      console.log("API Response:", data);
-      return data;
-    } catch (err) {
-      console.error("Error:", err);
+  const toggleSubMenu = (menuName) => {
+    setOpenMenus((prev) => ({
+      ...prev,
+      [menuName]: !prev[menuName],
+    }));
+  };
+  // async function getdata() {
+  //   try {
+  //     const res = await fetch(
+  //       "https://servermaltex.whdevs.com/menus/getMenusUserIDWise",
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ userID: 1 }),
+  //       }
+  //     );
+  //     if (!res.ok) throw new Error("Network error");
+  //     const data = await res.json();
+  //     console.log("API Response:", data);
+  //     return data;
+  //   } catch (err) {
+  //     console.error("Error:", err);
+  //   }
+  // }
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getDashboardData(1);
+        console.log("Dashboard API Response:", data);
+        setMenuData(data);
+      } catch (err) {
+        console.error("Error fetching dashboard data", err);
+      }
     }
-  }
-  
-  getdata();
-  
-  
-
-//   useEffect(() => {
-//     getdata();
-//   }, []);
+    fetchData();
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -87,42 +102,43 @@ const Dashboard = () => {
             >
               <MenuIcon />
             </IconButton>
+
             <Box
               component="img"
-              src={data?.companyLogo || "https://static.vecteezy.com/system/resources/thumbnails/008/214/517/small_2x/abstract-geometric-logo-or-infinity-line-logo-for-your-company-free-vector.jpg"}
+              src={dashboardInfo.companyLogo}
               alt="Company Logo"
               sx={{ width: 32, height: 32, borderRadius: "50%" }}
             />
             <Typography variant="h6" noWrap component="div">
-              {data?.companyName || "Company Name"}
+              {dashboardInfo.companyName}
             </Typography>
           </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              cursor: "pointer",
+            }}
+          >
             <Box
+              component="img"
+              src={dashboardInfo.userProfile}
+              alt="User Avatar"
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                cursor: "pointer",
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                border: "2px solid white",
               }}
+            />
+            <Typography
+              variant="body1"
+              sx={{ fontWeight: 500, fontSize: "14px" }}
             >
-              <Box
-                component="img"
-                src={data?.userProfile || "https://mui.com/static/images/avatar/2.jpg"}
-                alt="User Avatar"
-                sx={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: "50%",
-                  border: "2px solid white",
-                }}
-              />
-              <Typography
-                variant="body1"
-                sx={{ fontWeight: 500, fontSize: "14px" }}
-              >
-                {data?.userName || "Ibrahim"}
-              </Typography>
-            </Box>
+              {dashboardInfo.userName}
+            </Typography>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -142,11 +158,40 @@ const Dashboard = () => {
         <Toolbar />
         <Box sx={{ overflow: "auto" }}>
           <List>
-            {data?.siderList.map((text) => (
-              <ListItem button key={text}>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
+            {menuData && menuData.length > 0 ? (
+              menuData.map((head) => (
+                <Box key={head.headMenu}>
+                  <ListItemButton onClick={() => toggleSubMenu(head.headMenu)}>
+                    <ListItemText
+                      primary={head.headMenu}
+                      sx={{ fontWeight: "bold" }}
+                    />
+                    {openMenus[head.headMenu] ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse
+                    in={openMenus[head.headMenu]}
+                    timeout="auto"
+                    unmountOnExit
+                  >
+                    <List component="div" disablePadding>
+                      {head.ArrSubMenu?.map((sub) => (
+                        <ListItem disablePadding>
+                          <ListItemButton
+                            component="a"
+                            href={sub.menuURL}
+                            sx={{ pl: 4 }}
+                          >
+                            <ListItemText primary={sub.subMenu} />
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Collapse>
+                </Box>
+              ))
+            ) : (
+              <Typography sx={{ pl: 2, pt: 2 }}>Loading menu...</Typography>
+            )}
           </List>
         </Box>
       </Drawer>

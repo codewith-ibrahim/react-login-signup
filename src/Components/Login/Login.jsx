@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../Redux/authSlice";
+import { loginCompany} from "../../api/auth"
 import Button from "../ui/Button";
 import "../css/Form.css";
 
@@ -11,34 +12,43 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    try {
+      const data = await loginCompany(cmpID, cmpEmail);
+      dispatch(loginSuccess(data));
+      alert("Logged in successfully");
+      e.target.reset();
+    } catch(err){
+      alert(err.message || "Something went wrong");
+    }
+
     const form = new FormData(e.target);
     const cmpID = form.get("cmpID");
     const cmpEmail = form.get("cmpEmail");
 
-    isSubmitting(true);
+    // isSubmitting(true);
 
-    try {
-      const res = await fetch("https://servermaltex.whdevs.com/company/addcompany", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cmpID, cmpEmail }),
-      });
+    // try {
+    //   const res = await fetch("https://servermaltex.whdevs.com/company/addcompany", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({ cmpID, cmpEmail }),
+    //   });
 
-      const data = await res.json();
+    //   const data = await res.json();
 
-      if (res.ok) {
-        dispatch(loginSuccess(data.data));
-        alert("Logged in successfully");
-        e.target.reset();
-      } else {
-        alert((data.message || "Invalid credentials"));
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      alert("Something went wrong, please try again later.");
-    } finally {
-      isSubmitting(false)
-    }
+    //   if (res.ok) {
+    //     dispatch(loginSuccess(data.data));
+    //     alert("Logged in successfully");
+    //     e.target.reset();
+    //   } else {
+    //     alert((data.message || "Invalid credentials"));
+    //   }
+    // } catch (error) {
+    //   console.error("Login error:", error);
+    //   alert("Something went wrong, please try again later.");
+    // } finally {
+    //   isSubmitting(false)
+    // }
   };
 
   return (
